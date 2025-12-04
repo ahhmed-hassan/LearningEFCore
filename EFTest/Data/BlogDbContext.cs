@@ -1,5 +1,6 @@
 ﻿using EFTest.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,18 @@ using System.Threading.Tasks;
 namespace EFTest.Data;
 internal class BlogDbContext : DbContext
 {
+    private static IConfigurationRoot configuration => new ConfigurationBuilder().
+                AddJsonFile("appsettings.json").
+                Build();
     public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        // optionsBuilder.UseSqlite("Data Source=blog.db");
-        optionsBuilder.UseSqlServer("Server=localhost,1432;Database=BlogDb;User Id=sa;Password=YourStrong!Pass123;TrustServerCertificate=True");
+        base.OnConfiguring(optionsBuilder);
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        optionsBuilder.UseSqlServer(connectionString);
            
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

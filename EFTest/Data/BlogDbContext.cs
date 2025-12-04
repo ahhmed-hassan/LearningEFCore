@@ -16,7 +16,8 @@ internal class BlogDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // optionsBuilder.UseSqlite("Data Source=blog.db");
-        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=BlogDb;User Id=sa;Password=YourStrong!Pass123;TrustServerCertificate=True");
+        optionsBuilder.UseSqlServer("Server=localhost,1432;Database=BlogDb;User Id=sa;Password=YourStrong!Pass123;TrustServerCertificate=True");
+           
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

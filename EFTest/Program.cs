@@ -1,11 +1,15 @@
 ﻿using EFTest.Data;
 using EFTest.Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EFTest
 {
     internal class Program
     {
+        internal static IConfigurationRoot configuration => new ConfigurationBuilder().
+                AddJsonFile("appsettings.json").
+                Build();
         static async Task SeedData()
         {
             using (var context = new BlogDbContext())
@@ -57,13 +61,14 @@ namespace EFTest
 
         static async Task Main(string[] args)
         {
-            const bool seed = true;
+
+            bool seed = configuration.GetValue<bool>("SeedDatabase");
             if (seed)
                 await SeedData(); 
             
             using ( var context = new BlogDbContext())
             {
-                
+                var fristcomment = await context.Comments.FindAsync(1);
             }
 
         }

@@ -21,7 +21,9 @@ internal class BlogDbContext : DbContext
     {
         base.OnConfiguring(optionsBuilder);
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(connectionString);
+        optionsBuilder.UseSqlServer(connectionString).
+            LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+            ;
            
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

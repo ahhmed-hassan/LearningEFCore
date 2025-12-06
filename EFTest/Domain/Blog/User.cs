@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFTest.Domain;
+namespace EFTest.Domain.Blog;
 
 internal class User
 {

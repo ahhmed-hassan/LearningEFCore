@@ -1,7 +1,6 @@
 ﻿using EFTest.Data.BlogDB;
-using EFTest.Domain;
+using EFTest.Domain.Blog;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EFTest
 {

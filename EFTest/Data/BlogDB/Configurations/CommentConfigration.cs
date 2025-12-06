@@ -1,4 +1,4 @@
-﻿using EFTest.Domain;
+﻿using EFTest.Domain.Blog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

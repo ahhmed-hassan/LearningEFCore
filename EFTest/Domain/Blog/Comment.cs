@@ -1,5 +1,4 @@
-﻿
-namespace EFTest.Domain;
+﻿namespace EFTest.Domain.Blog;
 
 internal class Comment
 {

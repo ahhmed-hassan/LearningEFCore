@@ -1,7 +1,6 @@
-﻿
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
-namespace EFTest.Domain;
+namespace EFTest.Domain.Blog;
 
 internal class Post
 {

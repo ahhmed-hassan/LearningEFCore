@@ -1,4 +1,4 @@
-﻿using EFTest.Data;
+﻿using EFTest.Data.BlogDB;
 using EFTest.Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

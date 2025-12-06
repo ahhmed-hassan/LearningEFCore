@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFTest.Data.Configurations;
+namespace EFTest.Data.BlogDB.Configurations;
 
 internal class UserConfiguration : IEntityTypeConfiguration<User>
 {

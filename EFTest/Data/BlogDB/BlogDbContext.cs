@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFTest.Data;
+namespace EFTest.Data.BlogDB;
 internal class BlogDbContext : DbContext
 {
     private static IConfigurationRoot configuration => new ConfigurationBuilder().

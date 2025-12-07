@@ -12,7 +12,7 @@ internal class FakeTwitterV1DBContext : DbContext
 
     public DbSet<User> users { get; set; }
     public DbSet<Tweet> tweets { get; set; }
-    //public DbSet<Comment> comments { get; set; }
+    public DbSet<Comment> comments { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

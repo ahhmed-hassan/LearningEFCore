@@ -8,6 +8,7 @@ public class AppDbContext : DbContext
 {
     public DbSet<Course> Courses { get; set; }
     public DbSet<Instructor> Instructors { get; set; }
+    public DbSet<Office> Offices { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

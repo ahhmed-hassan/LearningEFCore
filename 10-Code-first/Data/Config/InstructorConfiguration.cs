@@ -28,10 +28,10 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
 
     private static List<Instructor> LoadInstructors() => new()
             {
-                new Instructor { Id = 1, FirstName = "Ahmed", LastName = "Abdullah"},
-                new Instructor { Id = 2, FirstName = "Yasmeen", LastName = "Yasmeen"},
-                new Instructor { Id = 3, FirstName = "Khalid", LastName = "Hassan"},
-                new Instructor { Id = 4, FirstName = "Nadia", LastName = "Ali"},
-                new Instructor { Id = 5, FirstName = "Ahmed", LastName = "Abdallah"},
+                new Instructor { Id = 1, FirstName = "Ahmed", LastName = "Abdullah", OfficeId = 1},
+                new Instructor { Id = 2, FirstName = "Yasmeen", LastName = "Yasmeen", OfficeId = 2},
+                new Instructor { Id = 3, FirstName = "Khalid", LastName = "Hassan", OfficeId = 3},
+                new Instructor { Id = 4, FirstName = "Nadia", LastName = "Ali", OfficeId = 4},
+                new Instructor { Id = 5, FirstName = "Ahmed", LastName = "Abdallah", OfficeId = 5},
             };
 }

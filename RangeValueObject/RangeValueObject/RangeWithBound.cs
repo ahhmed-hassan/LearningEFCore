@@ -6,24 +6,32 @@ using System.Threading.Tasks;
 
 namespace RangeValueObject;
 
+/// <summary>
+/// RangeBoudnd
+/// </summary>
+/// 
+/// <typeparam name="T"></typeparam>
+
 public readonly record struct RangeBound<T> : IComparable<RangeBound<T>>
     where T : IComparable<T>
 {
     private readonly T? _value;
+    
     private readonly bool _isInfinity;
 
-    private RangeBound(T? value, bool isInfinity) 
-    {
-        _value = value;
-        _isInfinity = isInfinity;
-    }
-    public int CompareTo(RangeBound<T> other)
-    {
-        if (_isInfinity && other._isInfinity) return 0;
-        if (_isInfinity) return 1;
-        if (other._isInfinity) return -1;
-        return _value!.CompareTo(other._value);
-    }
+    private RangeBound(T? value, bool isInfinity) => 
+        (_value, _isInfinity) = (value, isInfinity);
+  
+    public int CompareTo(RangeBound<T> other) =>   
+       (_isInfinity, other._isInfinity)  switch
+        {
+            (true, true) => 0, 
+            (true, false) => 1, 
+            (false, true) => -1, 
+            (false, false) => _value!.CompareTo(other._value!)
+        };
+
+    
     public int CompareTo(T other) => CompareTo(ValueOf(other));
     public static RangeBound<T> Infinity() => new RangeBound<T>(default, true);
     public static RangeBound<T> ValueOf(T value) => new RangeBound<T>(value, false);

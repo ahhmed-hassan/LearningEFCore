@@ -21,6 +21,11 @@ public class InstructorConfiguration : IEntityTypeConfiguration<Instructor>
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.HasMany(Instructor => Instructor.Sections)
+            .WithOne()
+            .HasForeignKey(sec=> sec.InstructorId)
+            .IsRequired(false);
+
         builder.ToTable("Instructors");
 
         builder.HasData(LoadInstructors());

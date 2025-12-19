@@ -22,6 +22,11 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.Property(x => x.Price)
             .HasPrecision(15, 2);
 
+        builder.HasMany(course => course.Sections)
+            .WithOne()
+            .HasForeignKey(section => section.CourseId)
+            .IsRequired();
+
         builder.ToTable("Courses");
 
 

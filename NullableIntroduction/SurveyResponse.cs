@@ -8,6 +8,9 @@ internal class SurveyResponse(int id)
     private static readonly Random randomGenerator = new Random();
     public static SurveyResponse GetRandomId() => new SurveyResponse(randomGenerator.Next());
 
+    public bool AnsweredSurvey => surveyResponses != null;
+    public string Answer(int index) => surveyResponses?.GetValueOrDefault(index) ?? "No answer";
+
     public bool AnswerSurvey(IEnumerable<SurveyQuestion> questions)
     {
         if (ConsentToSurvey())

@@ -27,6 +27,10 @@ internal class SurveyRun
 
     private List<SurveyResponse>? respondents;
 
+    public IEnumerable<SurveyResponse> AllParticipants => (respondents ?? Enumerable.Empty<SurveyResponse>());
+    public ICollection<SurveyQuestion> Questions => _surveyQuestions;
+    public SurveyQuestion GetQuestion(int index) => _surveyQuestions[index];
+
     public void AddQuestion(QuestionType questionType, string question) =>
         AddQuestion(new SurveyQuestion(questionType, question));
 

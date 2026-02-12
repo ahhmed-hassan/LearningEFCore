@@ -1,6 +1,7 @@
 using _10_Code_first.Data;
 using _10_Code_first.Entites;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _10_Code_first.Examples;
 
@@ -16,9 +17,9 @@ public static class RelationshipExamples
     /// Demonstrates that you CANNOT navigate from Section to Course
     /// because we used shadow navigation (no Course property on Section)
     /// </summary>
-    public static async Task Example1_ShadowNavigation_CannotNavigateToParent()
+    public static async Task Example1_ShadowNavigation_CannotNavigateToParent(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 1: Shadow Navigation - Cannot Navigate to Parent ===");
+        logger.LogInformation("\n=== Example 1: Shadow Navigation - Cannot Navigate to Parent ===");
 
         using var context = new AppDbContext();
 
@@ -29,7 +30,7 @@ public static class RelationshipExamples
 
         // ✅ Instead, we must query using the foreign key
         var course = await context.Courses.FirstAsync(c => c.Id == section.CourseId);
-        Console.WriteLine($"Section '{section.SectionName}' belongs to course: {course.CourseName}");
+        logger.LogInformation("Section '{SectionName}' belongs to course: {CourseName}", section.SectionName, course.CourseName);
 
         // ✅ Or use a join
         var sectionWithCourse = await context.Set<Section>()
@@ -41,16 +42,16 @@ public static class RelationshipExamples
             })
             .FirstAsync();
 
-        Console.WriteLine($"Via join: Section '{sectionWithCourse.SectionName}' → Course '{sectionWithCourse.CourseName}'");
+        logger.LogInformation("Via join: Section '{SectionName}' → Course '{CourseName}'", sectionWithCourse.SectionName, sectionWithCourse.CourseName);
     }
 
     /// <summary>
     /// Demonstrates querying from parent (Course) to children (Sections)
     /// This WORKS because Course has the Sections collection navigation property
     /// </summary>
-    public static async Task Example2_ParentToChild_NavigationWorks()
+    public static async Task Example2_ParentToChild_NavigationWorks(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 2: Parent → Child Navigation Works ===");
+        logger.LogInformation("\n=== Example 2: Parent → Child Navigation Works ===");
 
         using var context = new AppDbContext();
 
@@ -59,12 +60,12 @@ public static class RelationshipExamples
             .Include(c => c.Sections)
             .FirstAsync(c => c.Id == 1);
 
-        Console.WriteLine($"Course: {course.CourseName}");
-        Console.WriteLine($"Number of sections: {course.Sections.Count}");
+        logger.LogInformation($"Course: {course.CourseName}");
+        logger.LogInformation($"Number of sections: {course.Sections.Count}");
 
         foreach (var section in course.Sections)
         {
-            Console.WriteLine($"  - {section.SectionName}");
+            logger.LogInformation($"  - {section.SectionName}");
         }
     }
 
@@ -72,9 +73,9 @@ public static class RelationshipExamples
     /// Demonstrates REQUIRED relationship (Course → Section) with CASCADE delete
     /// When Course is deleted, all its Sections are automatically deleted
     /// </summary>
-    public static async Task Example3_RequiredRelationship_CascadeDelete()
+    public static async Task Example3_RequiredRelationship_CascadeDelete(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 3: Required Relationship - Cascade Delete ===");
+        logger.LogInformation("\n=== Example 3: Required Relationship - Cascade Delete ===");
 
         using var context = new AppDbContext();
 
@@ -96,32 +97,32 @@ public static class RelationshipExamples
         context.Set<Section>().AddRange(testSections);
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"Created course '{testCourse.CourseName}' with 2 sections");
+        logger.LogInformation($"Created course '{testCourse.CourseName}' with 2 sections");
 
         // Count sections before delete
         var sectionsBeforeDelete = await context.Set<Section>()
             .CountAsync(s => s.CourseId == 999);
-        Console.WriteLine($"Sections before delete: {sectionsBeforeDelete}");
+        logger.LogInformation($"Sections before delete: {sectionsBeforeDelete}");
 
         // Delete the course
         context.Courses.Remove(testCourse);
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"Deleted course '{testCourse.CourseName}'");
+        logger.LogInformation($"Deleted course '{testCourse.CourseName}'");
 
         // Count sections after delete - should be 0 (CASCADE)
         var sectionsAfterDelete = await context.Set<Section>()
             .CountAsync(s => s.CourseId == 999);
-        Console.WriteLine($"Sections after delete: {sectionsAfterDelete} (CASCADE deleted)");
+        logger.LogInformation($"Sections after delete: {sectionsAfterDelete} (CASCADE deleted)");
     }
 
     /// <summary>
     /// Demonstrates that you CANNOT create a Section without a CourseId
     /// because it's a required relationship (non-nullable foreign key)
     /// </summary>
-    public static async Task Example4_RequiredRelationship_CannotCreateWithoutParent()
+    public static async Task Example4_RequiredRelationship_CannotCreateWithoutParent(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 4: Required Relationship - Cannot Create Without Parent ===");
+        logger.LogInformation("\n=== Example 4: Required Relationship - Cannot Create Without Parent ===");
 
         using var context = new AppDbContext();
 
@@ -140,11 +141,11 @@ public static class RelationshipExamples
             // context.Set<Section>().Add(orphanSection);
             // await context.SaveChangesAsync();
 
-            Console.WriteLine("❌ Cannot create section without CourseId (won't compile)");
+            logger.LogInformation("❌ Cannot create section without CourseId (won't compile)");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            logger.LogInformation($"Error: {ex.Message}");
         }
 
         // ✅ Correct way - must specify CourseId
@@ -157,7 +158,7 @@ public static class RelationshipExamples
         context.Set<Section>().Add(validSection);
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"✅ Successfully created section with CourseId: {validSection.SectionName}");
+        logger.LogInformation($"✅ Successfully created section with CourseId: {validSection.SectionName}");
 
         // Cleanup
         context.Set<Section>().Remove(validSection);
@@ -168,9 +169,9 @@ public static class RelationshipExamples
     /// Demonstrates OPTIONAL relationship (Instructor → Section) with SET NULL
     /// When Instructor is deleted, InstructorId is set to NULL (sections survive)
     /// </summary>
-    public static async Task Example5_OptionalRelationship_SetNull()
+    public static async Task Example5_OptionalRelationship_SetNull(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 5: Optional Relationship - Set NULL on Delete ===");
+        logger.LogInformation("\n=== Example 5: Optional Relationship - Set NULL on Delete ===");
 
         using var context = new AppDbContext();
 
@@ -195,29 +196,29 @@ public static class RelationshipExamples
         }
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"Assigned instructor '{testInstructor.FirstName} {testInstructor.LastName}' to {sectionsToAssign.Count} sections");
+        logger.LogInformation($"Assigned instructor '{testInstructor.FirstName} {testInstructor.LastName}' to {sectionsToAssign.Count} sections");
 
         // Count sections assigned to this instructor
         var sectionsBeforeDelete = await context.Set<Section>()
             .CountAsync(s => s.InstructorId == 999);
-        Console.WriteLine($"Sections assigned to instructor: {sectionsBeforeDelete}");
+        logger.LogInformation($"Sections assigned to instructor: {sectionsBeforeDelete}");
 
         // Delete the instructor
         context.Instructors.Remove(testInstructor);
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"Deleted instructor '{testInstructor.FirstName} {testInstructor.LastName}'");
+        logger.LogInformation($"Deleted instructor '{testInstructor.FirstName} {testInstructor.LastName}'");
 
         // Check if sections still exist (they should)
         var sectionsAfterDelete = await context.Set<Section>()
             .Where(s => s.Id == 1 || s.Id == 2)
             .ToListAsync();
 
-        Console.WriteLine($"Sections after instructor delete: {sectionsAfterDelete.Count} (still exist)");
+        logger.LogInformation($"Sections after instructor delete: {sectionsAfterDelete.Count} (still exist)");
 
         foreach (var section in sectionsAfterDelete)
         {
-            Console.WriteLine($"  - {section.SectionName}: InstructorId = {section.InstructorId?.ToString() ?? "NULL (SetNull worked!)"}");
+            logger.LogInformation($"  - {section.SectionName}: InstructorId = {section.InstructorId?.ToString() ?? "NULL (SetNull worked!)"}");
         }
     }
 
@@ -225,9 +226,9 @@ public static class RelationshipExamples
     /// Demonstrates creating a Section with optional instructor
     /// Shows that InstructorId can be NULL but CourseId cannot
     /// </summary>
-    public static async Task Example6_OptionalVsRequired_CreatingEntities()
+    public static async Task Example6_OptionalVsRequired_CreatingEntities(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 6: Optional vs Required When Creating ===");
+        logger.LogInformation("\n=== Example 6: Optional vs Required When Creating ===");
 
         using var context = new AppDbContext();
 
@@ -243,15 +244,15 @@ public static class RelationshipExamples
         context.Set<Section>().Add(sectionWithoutInstructor);
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"✅ Created section without instructor: {sectionWithoutInstructor.SectionName}");
-        Console.WriteLine($"   CourseId: {sectionWithoutInstructor.CourseId} (required)");
-        Console.WriteLine($"   InstructorId: {sectionWithoutInstructor.InstructorId?.ToString() ?? "NULL"} (optional)");
+        logger.LogInformation($"✅ Created section without instructor: {sectionWithoutInstructor.SectionName}");
+        logger.LogInformation($"   CourseId: {sectionWithoutInstructor.CourseId} (required)");
+        logger.LogInformation($"   InstructorId: {sectionWithoutInstructor.InstructorId?.ToString() ?? "NULL"} (optional)");
 
         // Later, assign an instructor
         sectionWithoutInstructor.InstructorId = 1;
         await context.SaveChangesAsync();
 
-        Console.WriteLine($"✅ Later assigned instructor: InstructorId = {sectionWithoutInstructor.InstructorId}");
+        logger.LogInformation($"✅ Later assigned instructor: InstructorId = {sectionWithoutInstructor.InstructorId}");
 
         // Cleanup
         context.Set<Section>().Remove(sectionWithoutInstructor);
@@ -261,9 +262,9 @@ public static class RelationshipExamples
     /// <summary>
     /// Demonstrates querying patterns when you don't have child-to-parent navigation
     /// </summary>
-    public static async Task Example7_QueryingWithoutNavigation()
+    public static async Task Example7_QueryingWithoutNavigation(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 7: Querying Without Navigation Properties ===");
+        logger.LogInformation("\n=== Example 7: Querying Without Navigation Properties ===");
 
         using var context = new AppDbContext();
 
@@ -272,21 +273,21 @@ public static class RelationshipExamples
             .Where(s => s.CourseId == 1)
             .ToListAsync();
 
-        Console.WriteLine($"Sections for Course 1: {mathSections.Count}");
+        logger.LogInformation($"Sections for Course 1: {mathSections.Count}");
 
         // Get sections taught by a specific instructor (using FK)
         var instructor1Sections = await context.Set<Section>()
             .Where(s => s.InstructorId == 1)
             .ToListAsync();
 
-        Console.WriteLine($"Sections taught by Instructor 1: {instructor1Sections.Count}");
+        logger.LogInformation($"Sections taught by Instructor 1: {instructor1Sections.Count}");
 
         // Get unassigned sections
         var unassignedSections = await context.Set<Section>()
             .Where(s => s.InstructorId == null)
             .ToListAsync();
 
-        Console.WriteLine($"Unassigned sections: {unassignedSections.Count}");
+        logger.LogInformation($"Unassigned sections: {unassignedSections.Count}");
 
         // Complex query: Get section details with course and instructor names
         var sectionDetails = await context.Set<Section>()
@@ -307,19 +308,19 @@ public static class RelationshipExamples
             .Take(3)
             .ToListAsync();
 
-        Console.WriteLine("\nSection Details (first 3):");
+        logger.LogInformation("\nSection Details (first 3):");
         foreach (var detail in sectionDetails)
         {
-            Console.WriteLine($"  {detail.SectionName} | {detail.CourseName} | {detail.InstructorName}");
+            logger.LogInformation($"  {detail.SectionName} | {detail.CourseName} | {detail.InstructorName}");
         }
     }
 
     /// <summary>
     /// Demonstrates reassigning sections between instructors
     /// </summary>
-    public static async Task Example8_ReassigningRelationships()
+    public static async Task Example8_ReassigningRelationships(ILogger logger)
     {
-        Console.WriteLine("\n=== Example 8: Reassigning Relationships ===");
+        logger.LogInformation("\n=== Example 8: Reassigning Relationships ===");
 
         using var context = new AppDbContext();
 
@@ -330,18 +331,18 @@ public static class RelationshipExamples
         if (section != null)
         {
             var oldInstructorId = section.InstructorId;
-            Console.WriteLine($"Section '{section.SectionName}' is currently taught by Instructor {oldInstructorId}");
+            logger.LogInformation($"Section '{section.SectionName}' is currently taught by Instructor {oldInstructorId}");
 
             // Reassign to instructor 2
             section.InstructorId = 2;
             await context.SaveChangesAsync();
 
-            Console.WriteLine($"Reassigned to Instructor {section.InstructorId}");
+            logger.LogInformation($"Reassigned to Instructor {section.InstructorId}");
 
             // Revert for consistency
             section.InstructorId = oldInstructorId;
             await context.SaveChangesAsync();
-            Console.WriteLine($"Reverted back to Instructor {oldInstructorId}");
+            logger.LogInformation($"Reverted back to Instructor {oldInstructorId}");
         }
     }
 }

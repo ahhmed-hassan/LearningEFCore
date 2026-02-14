@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
         var configuration = new ConfigurationBuilder()
            .AddJsonFile("appsettings.json")
            .Build();
-        var constr = configuration.GetConnectionString("MetigatorCFM");
+        var constr = configuration.GetConnectionString("MetigatorOneToMany");
         optionsBuilder.UseSqlServer(constr)
             .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
             

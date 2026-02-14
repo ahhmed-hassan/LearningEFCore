@@ -1,5 +1,6 @@
-﻿
+
 using _10_Code_first.Entites;
+using _10_Code_first.Entites.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,10 +18,40 @@ internal class SectionConfiguration : IEntityTypeConfiguration<Section>
             .HasMaxLength(255)
             .IsRequired();
 
+        // OwnsOne: Schedule is stored as columns IN the Sections table
+        builder.OwnsOne(s => s.Schedule, scheduleBuilder =>
+        {
+            scheduleBuilder.Property(d => d.StartDate)
+                .HasColumnName("Schedule_StartDate")
+                .IsRequired();
+
+            scheduleBuilder.Property(d => d.EndDate)
+                .HasColumnName("Schedule_EndDate")
+                .IsRequired();
+
+            // Explicitly ignore computed properties — EF must not try to map them
+            scheduleBuilder.Ignore(d => d.TotalDays);
+            scheduleBuilder.Ignore(d => d.IsActive);
+        });
+
         builder.ToTable("Sections");
 
         builder.HasData(LoadSections());
-       
+
+        // Seed data for owned type — anonymous objects with the owner's PK
+        builder.OwnsOne(s => s.Schedule).HasData(
+            new { SectionId = 1,  StartDate = new DateTime(2026, 1, 15), EndDate = new DateTime(2026, 4, 15) },
+            new { SectionId = 2,  StartDate = new DateTime(2026, 2, 1),  EndDate = new DateTime(2026, 5, 1) },
+            new { SectionId = 3,  StartDate = new DateTime(2026, 1, 10), EndDate = new DateTime(2026, 2, 10) },
+            new { SectionId = 4,  StartDate = new DateTime(2026, 3, 1),  EndDate = new DateTime(2026, 6, 1) },
+            new { SectionId = 5,  StartDate = new DateTime(2026, 1, 20), EndDate = new DateTime(2026, 3, 20) },
+            new { SectionId = 6,  StartDate = new DateTime(2026, 4, 1),  EndDate = new DateTime(2026, 7, 1) },
+            new { SectionId = 7,  StartDate = new DateTime(2025, 9, 1),  EndDate = new DateTime(2025, 12, 1) },
+            new { SectionId = 8,  StartDate = new DateTime(2026, 2, 15), EndDate = new DateTime(2026, 5, 15) },
+            new { SectionId = 9,  StartDate = new DateTime(2026, 1, 5),  EndDate = new DateTime(2026, 7, 5) },
+            new { SectionId = 10, StartDate = new DateTime(2026, 3, 10), EndDate = new DateTime(2026, 8, 10) },
+            new { SectionId = 11, StartDate = new DateTime(2025, 6, 1),  EndDate = new DateTime(2025, 9, 1) }
+        );
     }
 
     private static List<Section> LoadSections() => new()

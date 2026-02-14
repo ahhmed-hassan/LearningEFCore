@@ -1,4 +1,6 @@
-﻿namespace _10_Code_first.Entites;
+﻿using _10_Code_first.Entites.ValueObjects;
+
+namespace _10_Code_first.Entites;
 
 public class Section
 {
@@ -6,4 +8,5 @@ public class Section
     public required string SectionName { get; set; }
     public int CourseId { get; set; }
     public int? InstructorId { get; set; }
+    public DateRange Schedule { get; set; } = null!;
 }

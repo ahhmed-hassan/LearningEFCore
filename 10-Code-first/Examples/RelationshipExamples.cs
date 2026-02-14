@@ -84,7 +84,7 @@ public static class RelationshipExamples
         {
             Id = 999,
             CourseName = "Test Course",
-            Price = 100m
+            Price = 100m, Tag = Entites.ValueObjects.CourseTag.Advanced
         };
         context.Courses.Add(testCourse);
         await context.SaveChangesAsync();

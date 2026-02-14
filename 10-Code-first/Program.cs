@@ -39,10 +39,12 @@ namespace _10_Code_first
                 logger.LogInformation("\n=== Value Object Examples ===");
                 logger.LogInformation("Demonstrating owned entities and queryability:\n");
 
-                await ValueObjectExamples.Example1_OwnedEntity_QueriesTranslateToSql(logger);
-                await ValueObjectExamples.Example2_OwnedEntity_AutomaticallyLoaded(logger);
-                await ValueObjectExamples.Example3_ValueConverter_EqualityQueryWorks(logger);
-                await ValueObjectExamples.Example4_ValueConverter_Limitations(logger);
+                //await ValueObjectExamples.Example1_OwnedEntity_QueriesTranslateToSql(logger);
+                //await ValueObjectExamples.Example2_OwnedEntity_AutomaticallyLoaded(logger);
+                //await ValueObjectExamples.Example3_ValueConverter_EqualityQueryWorks(logger);
+                //await ValueObjectExamples.Example4_ValueConverter_Limitations(logger);
+
+                await ComputedPropertyExamples.RunAll(logger);
 
                 logger.LogInformation("\n✅ All examples completed successfully!");
             }

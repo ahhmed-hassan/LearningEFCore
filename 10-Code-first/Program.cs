@@ -27,14 +27,20 @@ namespace _10_Code_first
 
             try
             {
-                await RelationshipExamples.Example1_ShadowNavigation_CannotNavigateToParent(logger);
-                await RelationshipExamples.Example2_ParentToChild_NavigationWorks(logger);
-                await RelationshipExamples.Example3_RequiredRelationship_CascadeDelete(logger);
-                await RelationshipExamples.Example4_RequiredRelationship_CannotCreateWithoutParent(logger);
-                await RelationshipExamples.Example5_OptionalRelationship_SetNull(logger);
-                await RelationshipExamples.Example6_OptionalVsRequired_CreatingEntities(logger);
-                await RelationshipExamples.Example7_QueryingWithoutNavigation(logger);
-                await RelationshipExamples.Example8_ReassigningRelationships(logger);
+                //await RelationshipExamples.Example1_ShadowNavigation_CannotNavigateToParent(logger);
+                //await RelationshipExamples.Example2_ParentToChild_NavigationWorks(logger);
+                //await RelationshipExamples.Example3_RequiredRelationship_CascadeDelete(logger);
+                //await RelationshipExamples.Example4_RequiredRelationship_CannotCreateWithoutParent(logger);
+                //await RelationshipExamples.Example5_OptionalRelationship_SetNull(logger);
+                //await RelationshipExamples.Example6_OptionalVsRequired_CreatingEntities(logger);
+                //await RelationshipExamples.Example7_QueryingWithoutNavigation(logger);
+                //await RelationshipExamples.Example8_ReassigningRelationships(logger);
+
+                logger.LogInformation("\n=== Value Object Examples ===");
+                logger.LogInformation("Demonstrating owned entities and queryability:\n");
+
+                await ValueObjectExamples.Example1_OwnedEntity_QueriesTranslateToSql(logger);
+                await ValueObjectExamples.Example2_OwnedEntity_AutomaticallyLoaded(logger);
 
                 logger.LogInformation("\n✅ All examples completed successfully!");
             }

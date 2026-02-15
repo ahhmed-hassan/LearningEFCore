@@ -13,6 +13,7 @@ This repository uses **branches as learning modules** - each branch demonstrates
 | **ef/entity-types-and-mapping** | EFTest (SQLite) | Entity configurations, relationships, IEntityTypeConfiguration | [📖 Guide](docs/ef-entity-types-and-mapping.md) |
 | **ef/code-first** | 10-Code-first | Migrations, schema evolution, data seeding | [📖 Guide](docs/ef-code-first.md) |
 | **ef/one-to-many** | 10-Code-first | One-to-many relationships, required/optional FKs | [📖 Guide](docs/ef-one-to-many-relationships.md) |
+| **ef/value-objects** | 10-Code-first | Value objects, owned entities, queryability, computed properties | [📖 Guide](docs/ef-value-objects-queryability.md) |
 | **master** | Multiple | Stable reference point | - |
 
 ## Quick Start
@@ -109,6 +110,35 @@ git checkout <branch-name>       # Switch to a topic
 
 ---
 
+### 🔹 ef/value-objects
+
+**Project:** `10-Code-first` (extended)
+
+**What You'll Learn:**
+- Value objects and rich domain models
+- Owned entities (`OwnsOne`) — storing value objects as columns in parent table
+- Value converters (`HasConversion`) — mapping value objects to single columns
+- Queryability problem with computed properties
+- Three workarounds for non-translatable queries:
+  - Rewriting with persisted properties (recommended)
+  - SQL computed columns (`HasComputedColumnSql`)
+  - Client-side evaluation (`AsEnumerable`)
+- Private setters and immutability patterns
+- Seeding owned types
+
+**Entities:** Course, Instructor, Office, Section + **Value Objects** (Address, CourseTag, DateRange)
+
+**Key Patterns:**
+- Address on Instructor (OwnsOne)
+- CourseTag on Course (HasConversion)
+- DateRange on Section (OwnsOne with computed properties)
+
+**Examples:** 8 runnable examples demonstrating owned entities, value converters, and queryability limitations
+
+**Database:** SQL Server
+
+---
+
 ## Documentation
 
 Each branch contains detailed study guides in the `docs/` folder:
@@ -116,6 +146,7 @@ Each branch contains detailed study guides in the `docs/` folder:
 - **[Entity Types & Mapping](docs/ef-entity-types-and-mapping.md)** - Configurations and relationships
 - **[Code-First Approach](docs/ef-code-first.md)** - Migrations and schema evolution
 - **[One-to-Many Relationships](docs/ef-one-to-many-relationships.md)** - Relationship patterns
+- **[Value Objects & Queryability](docs/ef-value-objects-queryability.md)** - Owned entities, value converters, computed properties
 
 Documentation includes:
 - ✅ Code examples with explanations
@@ -174,6 +205,12 @@ Update `appsettings.json` in each project with your database connection strings:
    - Deep dive into relationships
    - See how migrations handle relationships
 
+4. **Advance to ef/value-objects**
+   - Rich domain models with value objects
+   - Owned entities vs value converters
+   - Understand queryability limitations
+   - Learn workarounds for computed properties
+
 ## Useful Commands
 
 ### Branch Navigation
@@ -204,13 +241,14 @@ dotnet run
 
 Potential branches to add:
 - Many-to-many relationships (Student ↔ Course enrollment)
-- One-to-one relationships (Instructor ↔ Office)
-- Value objects and owned entities
-- Complex types
+- One-to-one relationships
+- Complex types (EF Core 8+)
 - Inheritance strategies (TPH, TPT, TPC)
 - Query optimization and performance
 - Change tracking
 - Transactions and concurrency
+- Raw SQL and stored procedures
+- Global query filters
 
 ## Organization Philosophy
 
@@ -240,4 +278,4 @@ When adding a new concept:
 
 **Happy Learning! 🚀**
 
-*Last Updated: 2026-02-12*
+*Last Updated: 2026-02-15*
